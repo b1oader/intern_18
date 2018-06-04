@@ -1,3 +1,18 @@
-from django.shortcuts import render
+from rest_framework.viewsets import ModelViewSet
+from .serializers import TypeSerializer, HeroSerializer, FightSerializer
+from .models import Type, Hero, Fight
 
-# Create your views here.
+
+class TypeViewSet(ModelViewSet):
+    serializer_class = TypeSerializer
+    queryset = Type.objects.all()
+
+
+class HeroViewSet(ModelViewSet):
+    serializer_class = HeroSerializer
+    queryset = Hero.objects.all()
+
+
+class FightViewSet(ModelViewSet):
+    serializer_class = FightSerializer
+    queryset = Fight.objects.all()

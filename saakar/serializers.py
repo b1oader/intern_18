@@ -1,4 +1,13 @@
-from rest_framework.serializers import HyperlinkedModelSerializer, PrimaryKeyRelatedField, ValidationError, HyperlinkedRelatedField
+from django.db.models import Q
+from rest_framework.serializers import (
+                                    HyperlinkedModelSerializer, 
+                                    PrimaryKeyRelatedField, 
+                                    ValidationError, 
+                                    HyperlinkedRelatedField,
+                                    ModelSerializer,
+                                    StringRelatedField,
+                                    SerializerMethodField
+                                    )
 from .models import Type, Hero, Fight
 
 
@@ -26,4 +35,34 @@ class FightSerializer(HyperlinkedModelSerializer):
         instance = Fight(**data)
         instance.clean()
         return data
-        
+
+class RankingSerializer(ModelSerializer):
+    hero_type = StringRelatedField()
+    full_name = SerializerMethodField('get_fullname')
+
+    def get_fullname(self, obj):
+        if obj.last_name != '':
+            full_name = f'{obj.first_name} {obj.last_name}'
+        else:
+            full_name = obj.first_name
+        return full_name
+
+    class Meta:
+        model = Hero
+        fields = ['full_name', 'hero_type', 'won_matches', 'lost_matches']
+
+
+class DeadHeroSerializer(HyperlinkedModelSerializer):
+    dead_date = SerializerMethodField('get_lostdate')
+
+    def get_lostdate(self, obj):
+        try:
+            hero_fights = Fight.objects.filter(Q(hero_1=obj)|Q(hero_2=obj))
+            lastfight_date = hero_fights.latest('fight_date').fight_date
+        except Fight.DoesNotExist:
+            lastfight_date = None
+        return lastfight_date
+
+    class Meta:
+        model = Hero
+        fields = ['first_name', 'last_name', 'hero_type', 'won_matches', 'dead_date']

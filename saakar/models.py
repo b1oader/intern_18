@@ -22,6 +22,27 @@ class Hero(models.Model):
         return f'{self.first_name} {self.last_name}({self.hero_type})'
 
 
+class FightQuerySet(models.QuerySet):
+
+    def delete(self, *args, **kwargs):
+        for obj in self:
+            first_hero = Hero.objects.get(id=obj.hero_1.id)
+            second_hero = Hero.objects.get(id=obj.hero_2.id)
+            if obj.result == 'H1':
+                first_hero.won_matches -= 1
+                second_hero.lost_matches -= 1
+                if obj.kill_loser is True:
+                    second_hero.existence = True
+            else:
+                second_hero.won_matches -= 1
+                first_hero.lost_matches -= 1
+                if obj.kill_loser is True:
+                    first_hero.existence = True
+            first_hero.save()
+            second_hero.save()
+        super(FightQuerySet, self).delete(*args, **kwargs)
+
+
 class Fight(models.Model):
     RESULTS = (
         ('H1', 'Hero 1 won'),
@@ -32,6 +53,7 @@ class Fight(models.Model):
     result = models.CharField(max_length=2, choices=RESULTS)
     fight_date = models.DateTimeField(default=timezone.now)
     kill_loser = models.BooleanField(default=False)
+    objects = FightQuerySet.as_manager()
 
     def __str__(self):
         return f'{self.hero_1} vs {self.hero_2}'
@@ -46,7 +68,6 @@ class Fight(models.Model):
         if fights_straight or fights_reverse:
             raise ValidationError('Fight already exists')
         
-
     def save(self, *args, **kwargs):
         first_hero = Hero.objects.get(id=self.hero_1.id)
         second_hero = Hero.objects.get(id=self.hero_2.id)

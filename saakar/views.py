@@ -17,18 +17,27 @@ class CustomModelViewSet(CreateModelMixin,
 
 
 class TypeViewSet(ModelViewSet):
+    """
+    Type CRUD, for admin user.
+    """
     permission_classes = (IsAdminUser,)
     serializer_class = TypeSerializer
     queryset = Type.objects.all()
 
 
 class HeroViewSet(ModelViewSet):
+    """
+    Hero CRUD, for admin user.
+    """
     permission_classes = (IsAdminUser,)
     serializer_class = HeroSerializer
     queryset = Hero.objects.all()
 
 
 class FightViewSet(CustomModelViewSet):
+    """
+    Fight create, read, delete, for admin user.
+    """
     permission_classes = (IsAdminUser,)
     serializer_class = FightSerializer
     queryset = Fight.objects.all()
@@ -40,7 +49,7 @@ class RankingViewSet(ReadOnlyModelViewSet):
     """
     permission_classes = (AllowAny,)
     serializer_class = RankingSerializer
-    queryset = Hero.objects.all().order_by('-won_matches')
+    queryset = Hero.objects.all().order_by('-won_matches', 'lost_matches')
 
 
 class DeadHeroViewSet(ReadOnlyModelViewSet):
@@ -49,4 +58,4 @@ class DeadHeroViewSet(ReadOnlyModelViewSet):
     """
     permission_classes = (IsAdminUser,)
     serializer_class = DeadHeroSerializer
-    queryset = Hero.objects.filter(existence=False).order_by('-won_matches')
+    queryset = Hero.objects.filter(existence=False).order_by('-won_matches', 'lost_matches')

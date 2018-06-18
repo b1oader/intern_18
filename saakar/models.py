@@ -50,7 +50,7 @@ class Fight(models.Model):
     )
     hero_1 = models.ForeignKey(Hero, related_name='hero_1', limit_choices_to={'existence': True})
     hero_2 = models.ForeignKey(Hero, related_name='hero_2', limit_choices_to={'existence': True})
-    result = models.CharField(max_length=2, choices=RESULTS)
+    result = models.CharField(max_length=2, choices=RESULTS, default='H1')
     fight_date = models.DateTimeField(default=timezone.now)
     kill_loser = models.BooleanField(default=False)
     objects = FightQuerySet.as_manager()

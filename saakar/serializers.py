@@ -6,7 +6,8 @@ from rest_framework.serializers import (
                                     HyperlinkedRelatedField,
                                     ModelSerializer,
                                     StringRelatedField,
-                                    SerializerMethodField
+                                    SerializerMethodField,
+                                    DateTimeField
                                     )
 from .models import Type, Hero, Fight
 
@@ -26,7 +27,7 @@ class HeroSerializer(HyperlinkedModelSerializer):
 class FightSerializer(HyperlinkedModelSerializer):
     hero_1 = HyperlinkedRelatedField(queryset=Hero.objects.filter(existence=True), view_name='hero-detail', read_only=False)
     hero_2 = HyperlinkedRelatedField(queryset=Hero.objects.filter(existence=True), view_name='hero-detail', read_only=False)
-
+    fight_date = DateTimeField(format="%Y-%m-%d %H:%M:%S")
     class Meta:
         model = Fight
         fields = ['id', 'hero_1', 'hero_2', 'result', 'fight_date', 'kill_loser']
@@ -58,11 +59,11 @@ class DeadHeroSerializer(HyperlinkedModelSerializer):
     def get_lostdate(self, obj):
         try:
             hero_fights = Fight.objects.filter(Q(hero_1=obj)|Q(hero_2=obj))
-            lastfight_date = hero_fights.latest('fight_date').fight_date
+            lastfight_date = hero_fights.latest('fight_date').fight_date.strftime("%Y-%m-%d %H:%M:%S")
         except Fight.DoesNotExist:
             lastfight_date = None
         return lastfight_date
 
     class Meta:
         model = Hero
-        fields = ['first_name', 'last_name', 'hero_type', 'won_matches', 'dead_date']
+        fields = ['first_name', 'last_name', 'hero_type', 'won_matches', 'lost_matches', 'dead_date']

@@ -1,4 +1,4 @@
-# Summer internship for Skygate
+# Summer Python Internship for Skygate
 ### Usage
 ###### Clone it
 `$ mkdir folder_name & cd folder_name`<br>

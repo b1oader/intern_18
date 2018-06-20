@@ -26,20 +26,7 @@ class FightQuerySet(models.QuerySet):
 
     def delete(self, *args, **kwargs):
         for obj in self:
-            first_hero = Hero.objects.get(id=obj.hero_1.id)
-            second_hero = Hero.objects.get(id=obj.hero_2.id)
-            if obj.result == 'H1':
-                first_hero.won_matches -= 1
-                second_hero.lost_matches -= 1
-                if obj.kill_loser is True:
-                    second_hero.existence = True
-            else:
-                second_hero.won_matches -= 1
-                first_hero.lost_matches -= 1
-                if obj.kill_loser is True:
-                    first_hero.existence = True
-            first_hero.save()
-            second_hero.save()
+            obj.delete()
         super(FightQuerySet, self).delete(*args, **kwargs)
 
 

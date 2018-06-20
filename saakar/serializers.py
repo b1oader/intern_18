@@ -7,7 +7,8 @@ from rest_framework.serializers import (
                                     ModelSerializer,
                                     StringRelatedField,
                                     SerializerMethodField,
-                                    DateTimeField
+                                    DateTimeField,
+                                    BooleanField
                                     )
 from .models import Type, Hero, Fight
 
@@ -19,6 +20,7 @@ class TypeSerializer(HyperlinkedModelSerializer):
 
 
 class HeroSerializer(HyperlinkedModelSerializer):
+    existence = BooleanField(initial=True)
     class Meta:
         model = Hero
         fields = ['id', 'first_name', 'last_name', 'hero_type', 'won_matches', 'lost_matches', 'existence']

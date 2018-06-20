@@ -46,6 +46,3 @@ run<br>
 ### Admin panel
 /admin/
 <br>
-### Permission
-U: admin<br>
-P: admin123

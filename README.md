@@ -1,4 +1,4 @@
-# Summer Python Internship for Skygate
+# Simple fight system API
 ### Usage
 ###### Clone it
 `$ mkdir folder_name & cd folder_name`<br>
